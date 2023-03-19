@@ -1,43 +1,71 @@
 /* eslint-disable no-undef */
-const downloadChat = () => {
-  // Get the chat ID from the URL
-  const id = window.location.href.match(/\/chat\/([\w-]+)$/)[1];
-  // Get the selected Chat title
-  const title = document
-    .querySelector("a.bg-gray-800 .flex-1.text-ellipsis")
-    .textContent.trim();
-  // Collect the chat messages
-  const messages = Array.from(
-    document.querySelectorAll(
-      ".group div:first-child .flex-grow > div:first-child"
-    )
-  ).map((message, index) => ({
-    role: index % 2 === 0 ? "user" : "assistant",
-    content: message.textContent.trim(),
-  }));
-  console.debug(
-    `Collected ${messages.length} messages from chat ${id} with title ${title}`
-  );
-  // Create the chat object
-  const chat = { id, title, messages };
-  // Save the chat in storage with the chat ID as the key
-  chrome.storage.local.set({ [id]: chat }).then(function () {
-    console.debug(`Saved chat ${id} to storage`);
+const downloadChat = async () => {
+  return new Promise(async (resolve) => {
+    // Get the chat ID from the URL
+    const id = window.location.href.match(/\/chat\/([\w-]+)$/)[1];
+
+    // Get the selected Chat title
+    const titleElement = await waitForElement(
+      "a.bg-gray-800 .flex-1.text-ellipsis"
+    );
+    const title = titleElement.textContent.trim();
+
+    // Collect the chat messages
+    const messages = Array.from(
+      document.querySelectorAll(
+        ".group div:first-child .flex-grow > div:first-child"
+      )
+    ).map((message, index) => ({
+      role: index % 2 === 0 ? "user" : "assistant",
+      content: message.textContent.trim(),
+    }));
+
+    console.debug(
+      `Collected ${messages.length} messages from chat ${id} with title ${title}`
+    );
+
+    // Create the chat object
+    const chat = { id, title, messages };
+
+    // Save the chat in storage with the chat ID as the key
+    chrome.storage.local.set({ [id]: chat }, () => {
+      console.debug(`Saved chat ${id} to storage`);
+      resolve();
+    });
   });
-  // Download the chat file with the chat ID as the filename
-  const blob = new Blob([JSON.stringify(chat, null, 2)], {
-    type: "application/json",
-  });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${id}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  console.debug(`Download chat ${id} to device`);
 };
 
-const clickAndWait = (index, waitTime) => {
+const waitForUrlChange = (currentUrl) => {
+  return new Promise((resolve) => {
+    const checkUrlChange = () => {
+      if (
+        window.location.href !== currentUrl &&
+        window.location.href.includes("https://chat.openai.com/chat/")
+      ) {
+        resolve();
+      } else {
+        setTimeout(checkUrlChange, 100);
+      }
+    };
+    checkUrlChange();
+  });
+};
+
+const waitForElement = (selector) => {
+  return new Promise((resolve) => {
+    const checkElement = () => {
+      const element = document.querySelector(selector);
+      if (element) {
+        resolve(element);
+      } else {
+        setTimeout(checkElement, 100);
+      }
+    };
+    checkElement();
+  });
+};
+
+const clickAndWait = async (index) => {
   const chats = document.querySelectorAll("nav > div > div > a");
   if (index >= chats.length) {
     // Check for the "Show more" button
@@ -46,26 +74,24 @@ const clickAndWait = (index, waitTime) => {
     // If the button exists, click it and wait before continuing
     if (showMoreButton) {
       showMoreButton.click();
-      setTimeout(() => {
-        clickAndWait(index, waitTime);
-      }, waitTime);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await clickAndWait(index);
     }
 
     return;
   }
 
+  const currentUrl = window.location.href;
   chats[index].click();
-  downloadChat();
-
-  setTimeout(() => {
-    clickAndWait(index + 1, waitTime);
-  }, waitTime);
+  await waitForUrlChange(currentUrl);
+  await downloadChat();
+  await clickAndWait(index + 1);
 };
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "downloadChat") {
-    downloadChat();
+    await downloadChat();
   } else if (request.action === "downloadAllChats") {
-    clickAndWait(0, 1000);
+    await clickAndWait(0);
   }
 });
