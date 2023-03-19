@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Zima",
+  "name": "Zima - ChatGPT Companion",
   "version": "1.0",
-  "description": "Download all chats from ChatGPT web app",
+  "description": "Enhance your OpenAI Chat experience with Zima, inspired by Zima Blue, offering advanced chat management, exporting, and search capabilities.",
   "permissions": [
     "storage",
     "tabs",

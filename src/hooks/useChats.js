@@ -1,34 +1,27 @@
 /* eslint-disable no-undef */
 import { useQuery } from "react-query";
 
-export const useChats = () => {
-  // const loadChats = async () => {
-  //   const allChats = await chrome?.storage?.local?.get();
-
-  //   const filteredChats = Object.entries(allChats).reduce(
-  //     (acc, [id, messages]) => {
-  //       if (!search) {
-  //         acc[id] = messages;
-  //       } else {
-  //         for (const message of messages) {
-  //           if (message.content.includes(search)) {
-  //             acc[id] = messages;
-  //             break;
-  //           }
-  //         }
-  //       }
-  //       return acc;
-  //     },
-  //     {}
-  //   );
-  //   setChats(filteredChats);
-  // };
-
+export const useChats = (search) => {
   return useQuery(
-    ["chats"],
+    ["chats", search],
     () => {
       console.debug(`💬 Chats ....`);
       return chrome?.storage?.local?.get().then((chats) => {
+        // filter chats for search
+        // chats = {'chatId': {id: 'chatId', title: 'chatTitle', messages: [{'role': 'user', 'content': 'message'}], ...}
+        // keep chats if title or messages contain search
+        if (search) {
+          const searchRegex = new RegExp(search, "i");
+          chats = Object.keys(chats)
+            .map((key) => chats[key])
+            .filter(
+              (chat) =>
+                searchRegex.test(chat.title) ||
+                chat.messages.some((message) =>
+                  searchRegex.test(message.content)
+                )
+            );
+        }
         console.debug(`💬 Chats loaded`);
         return chats;
       });

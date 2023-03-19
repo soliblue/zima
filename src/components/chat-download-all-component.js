@@ -3,14 +3,16 @@ import React from "react";
 import { Button } from "native-base";
 import { useQueryClient } from "react-query";
 
-export const ChatCreate = () => {
+export const ChatDownloadAll = () => {
   const queryClient = useQueryClient();
 
-  const onDownloadChat = () => {
+  const onDownloadAllChats = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "downloadChat" });
+      chrome.tabs.sendMessage(tabs[0].id, { action: "downloadAllChats" });
     });
-    queryClient.refetchQueries("chats");
+    setTimeout(() => {
+      queryClient.refetchQueries(["chats"]);
+    }, 1000);
   };
 
   return (
@@ -19,9 +21,9 @@ export const ChatCreate = () => {
       size="xs"
       variant="link"
       colorScheme={"black"}
-      onPress={onDownloadChat}
+      onPress={onDownloadAllChats}
     >
-      Download Chat
+      Download All Chats
     </Button>
   );
 };

@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 import React from "react";
 import { Search } from "react-ionicons";
-import { VStack, Text, Input, Box } from "native-base";
+import { VStack, Text, Input, Box, HStack } from "native-base";
+// internal
 import { ChatList } from "../components/chat-list.component";
-
-import { ChatCreate } from "../components/chat-create.component";
+import { ChatDownload } from "../components/chat-download.component";
+import { ChatDownloadAll } from "../components/chat-download-all-component";
+import { ChatDownloadAlert } from "../components/chat-download-alert.component";
 
 export const HomeScreen = () => {
   const [search, setSearch] = React.useState("");
@@ -44,7 +46,13 @@ export const HomeScreen = () => {
           </Box>
         }
       />
-      <ChatCreate />
+      <ChatDownloadAlert />
+
+      <HStack justifyContent={"center"}>
+        <ChatDownload />
+        <ChatDownloadAll />
+      </HStack>
+
       <ChatList search={search} />
     </VStack>
   );

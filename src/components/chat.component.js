@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, Modal, Button, Text, Box } from "native-base";
+import { FlatList, Modal, Text, Box, Pressable, HStack } from "native-base";
+import { Link } from "react-ionicons";
 
 export const Chat = ({ chat }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -17,22 +18,23 @@ export const Chat = ({ chat }) => {
           </Modal.Body>
         </Modal.Content>
       </Modal>
-      <Button
-        py={3}
-        shadow={1}
-        borderWidth={1}
-        borderColor="gray.100"
-        variant={"unstyled"}
-        _hover={{
-          shadow: 3,
-        }}
-        _text={{
-          color: "gray.800",
-        }}
-        onPress={() => setIsExpanded(!isExpanded)}
-      >
-        {chat?.title?.slice(0, 5) + "..."}
-      </Button>
+      <Pressable py={1} onPress={() => setIsExpanded(!isExpanded)}>
+        <HStack alignItems={"center"} space={1} justifyContent="space-between">
+          <Text noOfLines={1} fontSize="xs">
+            {chat?.title}
+          </Text>
+          <Link
+            height={"15px"}
+            width={"15px"}
+            onClick={() => {
+              // eslint-disable-next-line no-undef
+              chrome.tabs.create({
+                url: `https://chat.openai.com/chat/${chat?.id}`,
+              });
+            }}
+          />
+        </HStack>
+      </Pressable>
     </Box>
   );
 };
