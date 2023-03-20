@@ -11,6 +11,7 @@ import {
 } from "native-base";
 // internal
 import { useChats } from "../hooks/useChats";
+import { ChatSave } from "./chat-save-component";
 import { Chat } from "../components/chat.component";
 
 export const ChatList = ({ search }) => {
@@ -30,7 +31,7 @@ export const ChatList = ({ search }) => {
             alignItems="center"
             justifyContent={"space-between"}
           >
-            <HStack alignItems={"center"}>
+            <HStack space={1} alignItems={"center"}>
               <Text
                 p={1}
                 px={2}
@@ -42,6 +43,7 @@ export const ChatList = ({ search }) => {
               </Text>
               <Text fontSize={"xs"}>Chats...</Text>
             </HStack>
+            <ChatSave chatsLength={Object.keys(chats?.data)?.length || 0} />
           </HStack>
           <Divider />
 
