@@ -1,18 +1,11 @@
 /* eslint-disable no-undef */
 import React from "react";
-import {
-  Badge,
-  Divider,
-  FlatList,
-  HStack,
-  Spinner,
-  Text,
-  VStack,
-} from "native-base";
+import { Divider, FlatList, HStack, Spinner, Text, VStack } from "native-base";
 // internal
 import { useChats } from "../hooks/useChats";
 import { ChatSave } from "./chat-save-component";
 import { Chat } from "../components/chat.component";
+import { ChatDownloadAll } from "./chat-download-all.component";
 
 export const ChatList = ({ search }) => {
   const chats = useChats(search);
@@ -32,6 +25,7 @@ export const ChatList = ({ search }) => {
             justifyContent={"space-between"}
           >
             <HStack space={1} alignItems={"center"}>
+              <ChatDownloadAll chats={chats?.data} />
               <Text
                 p={1}
                 px={2}

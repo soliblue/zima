@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
 import React from "react";
-import { Button, Menu } from "native-base";
+import { Button, Menu, Text, VStack } from "native-base";
 import { useQueryClient } from "react-query";
+import { Sync } from "react-ionicons";
 
 export const ChatSave = () => {
   const queryClient = useQueryClient();
@@ -41,19 +42,28 @@ export const ChatSave = () => {
   return (
     <Menu
       trigger={(triggerProps) => (
-        <Button
-          variant="link"
-          isLoading={isLoading}
-          colorScheme={"black"}
-          _spinner={{ color: "black" }}
-          {...triggerProps}
-        >
-          Save Chats
-        </Button>
+        <VStack>
+          <Button
+            _text={{ color: "darkText" }}
+            {...triggerProps}
+            isLoading={isLoading}
+            _spinner={{ color: "darkText" }}
+            rightIcon={
+              <Sync
+                height="15px"
+                width="15px"
+                color="darkText"
+                fill="darkText"
+              />
+            }
+          >
+            Sync Chats
+          </Button>
+        </VStack>
       )}
     >
-      <Menu.Item onPress={onSaveChat}>Save Open Chat</Menu.Item>
-      <Menu.Item onPress={onSaveAllChats}>Save All Chats</Menu.Item>
+      <Menu.Item onPress={onSaveChat}>Open Chat</Menu.Item>
+      <Menu.Item onPress={onSaveAllChats}>All Chats</Menu.Item>
     </Menu>
   );
 };

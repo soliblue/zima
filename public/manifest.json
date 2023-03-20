@@ -2,11 +2,10 @@
   "manifest_version": 3,
   "name": "Zima - ChatGPT Companion",
   "version": "1.0",
-  "description": "Enhance your OpenAI Chat experience with Zima, inspired by Zima Blue, offering advanced chat management, exporting, and search capabilities.",
+  "description": "Enhance your OpenAI Chat experience with Zima, offering exporting, and search capabilities.",
   "permissions": [
     "storage",
-    "tabs",
-    "activeTab"
+    "tabs"
   ],
   "action": {
     "default_popup": "index.html",

@@ -1,3 +1,4 @@
+import { IconButton } from "native-base";
 import React from "react";
 import { Download } from "react-ionicons";
 
@@ -15,5 +16,12 @@ export const ChatDownload = ({ chat }) => {
     console.debug(`Download chat ${chat?.id} to device`);
   };
 
-  return <Download onClick={downloadChat} height={"15px"} width={"15px"} />;
+  return (
+    <IconButton
+      p={0}
+      variant="unstyled"
+      onPress={downloadChat}
+      icon={<Download height={"15px"} width={"15px"} />}
+    />
+  );
 };

@@ -28,8 +28,9 @@ export const ChatAlert = () => {
         <HStack space={2}>
           <Alert.Icon size={"xs"} pt={1} />
           <Text fontSize="xs">
-            Please make sure you are on the chat.openai.com website before
-            saving chats
+            Ensure you're on https://chat.openai.com/ before syncing your chats.
+            Refresh if just installed. Your chats will only be stored locally,
+            allowing you to download and search them with ease.
           </Text>
           <Pressable onPress={onCloseAlert}>
             <CloseIcon size={"xs"} />
