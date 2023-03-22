@@ -19,6 +19,12 @@ A browser extension that allows users to save and search through their OpenAI ch
 git clone https://github.com/SoliMouse/zima
 ```
 
+2. Go the directory
+
+```bash
+cd zima
+```
+
 2. Install dependencies:
 
 ```bash
@@ -35,7 +41,7 @@ npm run build
 
 - Open the Extensions page (chrome://extensions)
 - Enable "Developer mode"
-- Click "Load unpacked" and select the `build` folder in the `chat-saver` directory
+- Click "Load unpacked" and select the `build` folder in the `zima` directory
 
 ## Usage
 

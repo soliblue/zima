@@ -1,6 +1,6 @@
 import { extendTheme, NativeBaseProvider } from "native-base";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { HomeScreen } from "./screens/home.screen";
+import { ChatListScreen } from "./screens/chat-list.screen";
 
 const themeConfig = {
   useSystemColorMode: true,
@@ -28,7 +28,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NativeBaseProvider theme={theme}>
-        <HomeScreen />
+        <ChatListScreen />
       </NativeBaseProvider>
     </QueryClientProvider>
   );

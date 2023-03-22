@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { useQuery } from "react-query";
+import Fuse from "fuse.js";
 
 export const useChats = (search) => {
   return useQuery(
@@ -8,16 +9,12 @@ export const useChats = (search) => {
       console.debug(`💬 Chats ....`);
       return chrome?.storage?.local?.get().then((chats) => {
         if (search) {
-          const searchRegex = new RegExp(search, "i");
-          chats = Object.keys(chats)
-            .map((key) => chats[key])
-            .filter(
-              (chat) =>
-                searchRegex.test(chat.title) ||
-                chat.messages.some((message) =>
-                  searchRegex.test(message.content)
-                )
-            );
+          const fuseOptions = {
+            keys: ["title", "messages.content"],
+            threshold: 0.3,
+          };
+          const fuse = new Fuse(Object.values(chats), fuseOptions);
+          chats = fuse.search(search).map((result) => result.item);
         }
         console.debug(`💬 Chats loaded`);
         return chats;
