@@ -67,37 +67,33 @@ const waitForElement = (selector) => {
 
 const clickAndWait = async (index) => {
   const chats = document.querySelectorAll("nav > div > div > a");
-  if (index < chats.length) {
-    const currentUrl = window.location.href;
-    chats[index].click();
-    await waitForUrlChange(currentUrl);
-    await downloadChat();
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    await clickAndWait(index + 1);
-  }
-};
+  if (index >= chats.length) {
+    // Check for the "Show more" button
+    const showMoreButton = document.querySelector("button.btn-dark");
 
-const downloadChats = async () => {
-  // check num of chats in storage
-  const chats = await chrome.storage.local.get();
-  const numChats = Object.keys(chats).length;
-  // click on show more buttons until all chats are loaded
-  var showMoreButton = document.querySelector("button.btn-dark");
-  while (showMoreButton) {
-    showMoreButton.click();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    showMoreButton = document.querySelector("button.btn-dark");
+    // If the button exists, click it and wait before continuing
+    if (showMoreButton) {
+      showMoreButton.click();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await clickAndWait(index);
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    }
+
+    return;
   }
-  // get num of chats in storage after loading all chats
-  await clickAndWait(numChats);
-  // send message to background.js to download all chats
-  chrome.runtime.sendMessage({ action: "downloadAllChatsComplete" });
+
+  const currentUrl = window.location.href;
+  chats[index].click();
+  await waitForUrlChange(currentUrl);
+  await downloadChat();
+  await clickAndWait(index + 1);
 };
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "downloadChat") {
     await downloadChat();
   } else if (request.action === "downloadAllChats") {
-    await downloadChats();
+    await clickAndWait(0);
   }
 });
